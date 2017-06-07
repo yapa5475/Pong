@@ -13,54 +13,16 @@
 			var ballSpeedX = 2;
 			var ballSpeedY = 1;
 
+			var ball2X = 750;
+			var ball2Y = 50;
+
 			var paddle1Y = 250;
 			var paddle2Y = 250;
 			const PADDLE_HEIGHT = 100;
 			const PADDLE_THICKNESS = 10;
 
-			var player1score = 0;
-			var player2score = 0;
-			const WINNING_SCORE = 3;
-
-			var fruitX = 0;
-			var fruitY = 0;
-
 			var showWinScreen = false;
-
-			var firstGame = true;
-
-			//var pause = false;
-
-			
-			
-
-			//take in original values as parameters?
-			var bsx = ballSpeedX;
-			var bsy = ballSpeedY;
-
-			/*
-			function pause(ballSpeedXOrig, ballSpeedYOrig) {
-				if(ballSpeedXOrig != 0 && ballSpeedYOrig != 0){
-					var tempx = ballSpeedXOrig;
-					var tempy = ballSpeedYOrig;
-					ballSpeedX = 0;
-					ballSpeedY = 0;
-					//alert(tempx);
-					//alert(tempy);
-				}
-				else {
-					ballSpeedX = bsx;
-					ballSpeedY = bsy;
-				}
-
-				if(ballSpeedXOrig * ballSpeedX < 0){
-					ballSpeedX = ballSpeedX * -1;
-				}
-
-			}
-			*/
-			
-			
+			/*				
 			function calcMousePos(event) {
 				var rect = canvas.getBoundingClientRect();
 				var root = document.documentElement;
@@ -71,70 +33,36 @@
 					y:mouseY
 				};
 			}
+				*/
+
+
+			function startGame() {
+				location.href="pong.html";
+			}
 
 			function handleMouseClick(event) {
 				if(showWinScreen) {
 					player1score = player2score = 0;
 					showWinScreen = false;
 				}
-				else {
-					return;
-				}
 			}
 
-
 			window.onload = function() {
+
 				//console.log("Hello World!");
 				canvas = document.getElementById('gameCanvas');
 				canvasContext = canvas.getContext('2d');
-				canvasContext.fillText("Pong", 300, 400);
+
+				canvasContext.fillText("Pong", 100, 200);
+				canvasContext.fillText("Click to start", 100, 200);
 
 
-				if(showWinScreen) {
-					canvasContext.fillText("Menu", 350, 200);
 
-				}
+				canvasContext.textAlign = "center";
+				//canvasContext.fillText("Pong",);
 
-				/*adding menu option here*/
-				if(firstGame) {
-					//alert("First game"); - yes, first game is detected correctly
-
-					canvasContext.fillStyle = "white";
-					canvasContext.fillText("Left Player Won!", 350, 200);
-
-					//canvasContext.fillText("First game", 350, 200);
-
-					//works - correctly identifies first game
-					//want to add menu here
-
-					//canvasContext.fillText("Menu", 350, 200);
-
-					/*
-					if(player1score >= WINNING_SCORE || player2score >= WINNING_SCORE) {
-						firstGame = false;
-						// break;
-					}*/
-
-					//call startGame() from here after making menu
-
-					//canvasContext.fillText("Pong");
-					//canvasContext.fillText("Click anywhere to start");
-
-					//drawCanvas();
-
-					
-
-					startGame();
-					//canvas.addEventListener('mousedown', startGame)
-
-					
-				}
-
-			var framesPerSecond = 20; 		
-			/*Important*/
-			function startGame(){
-				ballSpeedX = 2;
-				ballSpeedY = 1;
+				var framesPerSecond = 20; 		
+				/*Important*/
 				setInterval(function(){
 					move();
 					drawCanvas();
@@ -148,43 +76,20 @@
 						/*control which paddle is moved by mouse here - paddle1*/
 						paddle1Y = mousePos.y - (PADDLE_HEIGHT/2);
 					})
-				}
-				//startGame();
-
-				colorRect(0,0,canvas.width,canvas.height,'black'); //0,0 - top left, width, height
-				canvasContext.fillText("Menu", 350, 200);
-				canvasContext.fillText("Pong", 350, 200);
-				//startGame();
-
-				
-				document.body.onkeyup = function(e){
-					if(e.keyCode == 32){ 				//works - checked if space is pressed
-						//alert("Pressed space");
-						pause(ballSpeedX,ballSpeedY);
-					}
-				}
 			}
 
-				
-			
-			function pause(x,y) {
-				alert("Pause function");
-				
-				var prePauseSpeedX = x;
-				var prePauseSpeedY = y;
-				
-			}
-			
-			function ballReset() {
-				if(player1score >= WINNING_SCORE || player2score >= WINNING_SCORE) {
-					showWinScreen = true;
-				}
-				ballSpeedX = 2;
-				ballSpeedY = 1;
-				ballX = canvas.width/2;
-				ballY = canvas.height/2;
-				
-			}
+			function showArrowKey(e) {
+                arrowKey = e.which||e.keyCode;
+                switch(arrowKey) {
+                    case 72:
+                        window.location = "page2.html";
+                        break;
+                    case 39:
+                         window.location = "page3.html";
+                        break;
+                }
+            }
+
 
 				/*
 				function callBoth() {
@@ -199,6 +104,13 @@
 				} else if(paddle2YCenter > ballY+35) {
 					paddle2Y -= 5;
 				}
+
+				var paddle1YCenter = paddle1Y + (PADDLE_HEIGHT/2);
+				if(paddle1YCenter < ballY-35) {
+					paddle1Y += 6;
+				} else if(paddle1YCenter > ballY+35) {
+					paddle1Y -= 6;
+				}
 			}
 
 			function move() {
@@ -209,6 +121,8 @@
 
 				ballX += ballSpeedX;
 				ballY += ballSpeedY;
+				ball2X -= ballSpeedX;
+				ball2Y += ballSpeedY;
 
 				
 				//horizontal on left is less than 0 - 
@@ -223,10 +137,9 @@
 						var deltaY = ballY - (paddle1Y+PADDLE_HEIGHT/2);
 						ballSpeedY = deltaY * 0.05;
 					} else {
-						ballSpeedX = 2;
-						ballSpeedY = 1;
-						player2score ++;	//need to add score before ballReset()
-						ballReset();					}
+						//player2score ++;	//need to add score before ballReset()
+						ballReset();
+					}
 				}
 				
 				if(ballX > canvas.width){
@@ -240,12 +153,8 @@
 						var deltaY = ballY - (paddle2Y+PADDLE_HEIGHT/2);
 						ballSpeedY = deltaY * 0.05;
 					} else {
-						ballSpeedX = 2;
-						ballSpeedY = 1;
-						player1score ++;
 						ballReset();
-						ballSpeedX = 2;
-						ballSpeedY = 1;
+						//player1score ++;
 					}
 				}
 
@@ -259,40 +168,26 @@
 				
 			}
 
-			function drawNet() {
-				for(var i=0; i< canvas.height; i+=40){
+			function drawStartNet() {
+				for(var i=0; i< canvas.height/3; i+=40){
 					colorRect(canvas.width/2-1,i,2,20,'white');
 				}
+				for(var i=canvas.height; i> (2*canvas.height)/3-40; i-=40){
+					colorRect(canvas.width/2-1,i,2,20,'white');
+				}
+				canvasContext.font = "30px Verdana";
+				canvasContext.fillText("Pong", 400, 250);
+				canvasContext.font = "20px Verdana";
+				canvasContext.fillText("Click to start", 400, 300);
+				//canvasContext.fillText("'h' for About/Help Menu", 400, 330); -- functionality not implemented
+
 			}
 
 			function drawCanvas() {
 				//black screen
 				colorRect(0,0,canvas.width,canvas.height,'black'); //0,0 - top left, width, height
-				//colorRect(0,0,canvas.width/2,canvas.height/2,'black'); //0,0 - top left, width, height
 
-				if(showWinScreen){
-				canvasContext.fillStyle = "white";
-				canvasContext.font = "15pt Verdana";
-				//canvasContext.textAlign = "center";
-				
-					if(player1score >= WINNING_SCORE){
-						//canvasContext.font = '40pt Calibri';
-						canvasContext.fillText("Left Player Won!", 300, 200);
-						firstGame = false;
-					}
-					else if (player2score >= WINNING_SCORE){
-						canvasContext.fillText("Right Player Won!", 300, 200);
-						firstGame = false;
-					}
-
-					canvasContext.fillStyle = "white";
-					canvasContext.fillText("Click to continue", 300, 500);
-					return;
-				}
-
-				
-
-				drawNet();
+				drawStartNet();
 
 				//left player paddle
 				colorRect(0,paddle1Y,PADDLE_THICKNESS,PADDLE_HEIGHT,'white');
@@ -303,10 +198,10 @@
 
 				//draw ball
 				colorCircle(ballX, ballY, 10, 'white');
+				colorCircle(ball2X, ball2Y, 10,'white');
 
-				canvasContext.fillText(player1score, 100, 200);
-				canvasContext.fillText(player2score, canvas.width-100, 200)
-				canvasContext.font="20px Verdana";
+				//canvasContext.fillText("0", 100, 100);
+				//canvasContext.fillText("0", canvas.width-100, 100)
 			}
 
 			function colorCircle(centerX, centerY, radius, drawColor) {
@@ -324,7 +219,8 @@
 		</script>
 
 	</head>
-	<body>
-		<!--<h1>Pong</h1>-->
+	<body onclick="startGame();" onkeydown="menu(event)">
+		<span id="PongTitle"></span>
 	</body>
+
 </html>
